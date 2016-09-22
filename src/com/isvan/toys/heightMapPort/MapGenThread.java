@@ -15,6 +15,8 @@ public class MapGenThread extends Thread {
 	int heightOffSet;
 	int maxNum;
 
+	int heightExtra;
+
 	double maxWidthStrength;
 	int widthStrengthVariance;
 
@@ -30,13 +32,18 @@ public class MapGenThread extends Thread {
 	int[] map;
 
 	boolean startNormalize;
+	double baseMin;
+	double baseMax;
 
-	public MapGenThread(int id, int width, int height,
+	public MapGenThread(int id, int width, int height, int heightExtra,
 			ArrayList<DataPoint> lakes, ArrayList<DataPoint> mountains,
 			MapThreadDoneListener lis) {
 		this.width = width;
 		this.height = height;
 		this.heightOffSet = id * height;
+		this.heightExtra = heightExtra; // This is only used for the last thread
+										// if the final resolution is not
+										// divisiable by the number of threads
 		this.id = id;
 		this.lakes = lakes;
 		this.mountains = mountains;
@@ -49,10 +56,10 @@ public class MapGenThread extends Thread {
 		maxWidthStrength = 12;
 		widthStrengthVariance = 12;
 
-		map = new int[width * height];
+		map = new int[width * (height+heightExtra)];
 
-		//System.out.println("Thead id " + id + " map size : " + map.length);
-		
+		// System.out.println("Thead id " + id + " map size : " + map.length);
+
 		startNormalize = false;
 
 		strength = 0.7f;
@@ -63,7 +70,7 @@ public class MapGenThread extends Thread {
 
 		addMountains();
 		addLakes();
-	//	dampen();
+		// dampen();
 		findMaxMin();
 
 		// System.out.println("Value at 50 " + map[50]);
@@ -77,10 +84,10 @@ public class MapGenThread extends Thread {
 
 			}
 		}
-
+		 normalize(baseMin, baseMax);
 		lis.sendFinishedMap(id, map);
 
-		// System.out.println("Thread Done : " + id);
+		System.out.println("Thread Done : " + id);
 	}
 
 	public void normalize(double baseMin, double baseMax) {
@@ -90,6 +97,9 @@ public class MapGenThread extends Thread {
 		 * < 0){ // System.out.println("Rounding Error Low End"); map[i] = 0; }
 		 * }
 		 */
+
+		System.out.println("Thread : " + id + " normlizing with : " + baseMin
+				+ " " + baseMax);
 
 		for (int i = 0; i < map.length; i++) {
 			int val = map[i];
@@ -101,15 +111,13 @@ public class MapGenThread extends Thread {
 
 				map[i] = maxNum;
 			}
-			
+
 			if (map[i] < 0) {
 				System.out.println("Rounding Error Low End  : " + val);
 
 				map[i] = 0;
 			}
-			
-			
-			
+
 		}
 
 	}
@@ -130,7 +138,7 @@ public class MapGenThread extends Thread {
 			int pointX = P.X;
 			int pointY = P.Y;
 
-			for (int i = 0; i < height; i++) {
+			for (int i = 0; i < height+heightExtra; i++) {
 				for (int k = 0; k < width; k++) {
 
 					double distance = MathUtils.distance(i + heightOffSet, k,
@@ -155,7 +163,7 @@ public class MapGenThread extends Thread {
 			int pointX = P.X;
 			int pointY = P.Y;
 
-			for (int i = 0; i < height; i++) {
+			for (int i = 0; i < height+heightExtra; i++) {
 				for (int k = 0; k < width; k++) {
 
 					// 255));
@@ -187,7 +195,7 @@ public class MapGenThread extends Thread {
 
 	public void dampen() {
 
-		for (int i = 0; i < height; i++) {
+		for (int i = 0; i < height+heightExtra; i++) {
 			for (int k = 0; k < width; k++) {
 
 				// 255));
@@ -197,8 +205,8 @@ public class MapGenThread extends Thread {
 				 * pointX, pointY) * 10), 0, (width * 2) * 2, 0, Math.pow(2,
 				 * 16))));
 				 */
-				map[width * i + k] -= 1000 * MathUtils.distance(i + heightOffSet, k,
-						width / 2, width / 2);
+				map[width * i + k] -= 1000 * MathUtils.distance(i
+						+ heightOffSet, k, width / 2, width / 2);
 
 				// img[cols * i + k] = (int) (0.5 * maxNum);
 

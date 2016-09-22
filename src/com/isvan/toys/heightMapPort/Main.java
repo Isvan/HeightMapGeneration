@@ -13,7 +13,7 @@ public class Main {
 		o.lakes = 20;
 		o.width = 1024;
 		o.height = 1024;
-		o.threads = 15;
+		o.threads = 5;
 		o.fileName = "../outPut.png";
 		o.seed = 6886837489603277824l;
 		 //o.seed = (long)(Math.random() * Long.MAX_VALUE);

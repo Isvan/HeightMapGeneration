@@ -98,11 +98,11 @@ public class HeightMap implements MapThreadDoneListener {
 			
 			if (i == O.threads - 1) {
 				//For when the dimensions don't divide nicely by the # of threads
-				threads.add(new MapGenThread(count, O.width, heightPart + heightLeftOver, lakes,
+				threads.add(new MapGenThread(count, O.width, heightPart , heightLeftOver, lakes,
 						mountains, this));
 
 			} else {
-				threads.add(new MapGenThread(count, O.width, heightPart, lakes,
+				threads.add(new MapGenThread(count, O.width, heightPart,0, lakes,
 						mountains, this));
 			}
 			
@@ -125,6 +125,8 @@ public class HeightMap implements MapThreadDoneListener {
 		threadsDone += id + 1;
 		finishedMapParts.set(id, map);
 
+		System.out.println("Thead : " + id + " finsished normalization");
+		
 		if (threadsDone == threadsDoneNeeded) {
 
 			generateFinalMap();
@@ -158,7 +160,9 @@ public class HeightMap implements MapThreadDoneListener {
 		for (MapGenThread M : threads) {
 			// Threads may be asleep as they are waiting, wake them up
 			M.interrupt();
-			M.normalize(minVal, maxVal);
+			M.baseMin = minVal;
+			M.baseMax = maxVal;
+			M.startNormalize = true;
 		}
 	}
 
