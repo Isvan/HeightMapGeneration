@@ -51,6 +51,8 @@ public class MapGenThread extends Thread {
 
 		map = new int[width * height];
 
+		//System.out.println("Thead id " + id + " map size : " + map.length);
+		
 		startNormalize = false;
 
 		strength = 0.7f;

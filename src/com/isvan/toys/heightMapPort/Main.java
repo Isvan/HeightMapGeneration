@@ -11,12 +11,12 @@ public class Main {
 
 		o.mountains = 20;
 		o.lakes = 20;
-		o.width = 1000;
-		o.height = 1000;
-		o.threads = 16;
+		o.width = 1024;
+		o.height = 1024;
+		o.threads = 15;
 		o.fileName = "../outPut.png";
-		o.seed = 5448455874320731136l;
-		 o.seed = (long)(Math.random() * Long.MAX_VALUE);
+		o.seed = 6886837489603277824l;
+		 //o.seed = (long)(Math.random() * Long.MAX_VALUE);
 
 		if (false) {
 			switch (args.length) {

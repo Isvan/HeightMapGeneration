@@ -53,7 +53,8 @@ public class HeightMap implements MapThreadDoneListener {
 		// Counter used to tell when all the threads are done working on a task
 		threadsDone = 0;
 
-		// Basically add the numbers 0+1 - 8+1 together, then as the threads end add
+		// Basically add the numbers 0+1 - 8+1 together, then as the threads end
+		// add
 		// them to threadsDone, and check if equal to threadsDoneNeeded, if they
 		// are then all are done
 		for (int i = 0; i < O.threads; i++) {
@@ -85,11 +86,28 @@ public class HeightMap implements MapThreadDoneListener {
 		threads = new ArrayList<MapGenThread>();
 
 		int heightPart = O.height / O.threads;
-
+		int heightLeftOver = O.height % O.threads;
 		int count = 0;
+		
+		System.out.println("Normal height : " + heightPart);
+		System.out.println("Height Left over : " + heightLeftOver);
+		
+		
 		for (int i = 0; i < O.threads; i++) {
-			threads.add(new MapGenThread(count, O.width, heightPart, lakes,
-					mountains, this));
+			
+			
+			if (i == O.threads - 1) {
+				//For when the dimensions don't divide nicely by the # of threads
+				threads.add(new MapGenThread(count, O.width, heightPart + heightLeftOver, lakes,
+						mountains, this));
+
+			} else {
+				threads.add(new MapGenThread(count, O.width, heightPart, lakes,
+						mountains, this));
+			}
+			
+			//threads.add(new MapGenThread(count, O.width, heightPart, lakes,
+		//			mountains, this));
 			count++;
 
 			threads.get(i).start();
@@ -138,7 +156,7 @@ public class HeightMap implements MapThreadDoneListener {
 
 	private void normalizeMap() {
 		for (MapGenThread M : threads) {
-			//Threads may be asleep as they are waiting, wake them up
+			// Threads may be asleep as they are waiting, wake them up
 			M.interrupt();
 			M.normalize(minVal, maxVal);
 		}
