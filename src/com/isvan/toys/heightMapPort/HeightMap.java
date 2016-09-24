@@ -21,7 +21,8 @@ public class HeightMap implements MapThreadDoneListener {
 	double minVal;
 
 	int[] finalMap;
-
+	int[] errosionMap;
+	
 	ArrayList<int[]> finishedMapParts;
 	ArrayList<MapGenThread> threads;
 
@@ -41,6 +42,7 @@ public class HeightMap implements MapThreadDoneListener {
 		this.O = O;
 		center = O.height / 2;
 		finalMap = new int[O.width * O.height];
+		errosionMap = new int[O.width * O.height];
 		finishedMapParts = new ArrayList<int[]>();
 
 		// Add dummy objects so we can replace them later
@@ -88,26 +90,25 @@ public class HeightMap implements MapThreadDoneListener {
 		int heightPart = O.height / O.threads;
 		int heightLeftOver = O.height % O.threads;
 		int count = 0;
-		
+
 		System.out.println("Normal height : " + heightPart);
 		System.out.println("Height Left over : " + heightLeftOver);
-		
-		
+
 		for (int i = 0; i < O.threads; i++) {
-			
-			
+
 			if (i == O.threads - 1) {
-				//For when the dimensions don't divide nicely by the # of threads
-				threads.add(new MapGenThread(count, O.width, heightPart , heightLeftOver, lakes,
-						mountains, this));
+				// For when the dimensions don't divide nicely by the # of
+				// threads
+				threads.add(new MapGenThread(count, O.width, heightPart,
+						heightLeftOver, lakes, mountains, this));
 
 			} else {
-				threads.add(new MapGenThread(count, O.width, heightPart,0, lakes,
-						mountains, this));
+				threads.add(new MapGenThread(count, O.width, heightPart, 0,
+						lakes, mountains, this));
 			}
-			
-			//threads.add(new MapGenThread(count, O.width, heightPart, lakes,
-		//			mountains, this));
+
+			// threads.add(new MapGenThread(count, O.width, heightPart, lakes,
+			// mountains, this));
 			count++;
 
 			threads.get(i).start();
@@ -125,8 +126,8 @@ public class HeightMap implements MapThreadDoneListener {
 		threadsDone += id + 1;
 		finishedMapParts.set(id, map);
 
-		System.out.println("Thead : " + id + " finsished normalization");
-		
+		// System.out.println("Thead : " + id + " finsished normalization");
+
 		if (threadsDone == threadsDoneNeeded) {
 
 			generateFinalMap();
@@ -176,17 +177,25 @@ public class HeightMap implements MapThreadDoneListener {
 		if (min < minVal) {
 			minVal = min;
 		}
-		System.out.println("Thead " + id + " done preNrom");
+
+		// System.out.println("Thead " + id + " done preNrom");
+
 		threadsDone += id + 1;
 		if (threadsDone == threadsDoneNeeded) {
 
 			threadsDone = 0;
-			System.out.println("Max Val : " + maxVal);
-			System.out.println("Min Val : " + minVal);
+			//System.out.println("Max Val : " + maxVal);
+		//	System.out.println("Min Val : " + minVal);
 
 			normalizeMap();
 		}
 
+	}
+
+	@Override
+	public void errodeDone(int id, int[] map) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

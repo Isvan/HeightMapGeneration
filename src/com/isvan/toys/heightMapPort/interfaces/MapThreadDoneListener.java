@@ -4,4 +4,5 @@ public interface MapThreadDoneListener {
 
 	public void sendFinishedMap(int id,int[] map);
 	public  void  preNormDone(int id,double max,double min);
+	public void errodeDone(int id,int[] map);
 }

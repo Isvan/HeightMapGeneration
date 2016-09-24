@@ -84,10 +84,11 @@ public class MapGenThread extends Thread {
 
 			}
 		}
-		 normalize(baseMin, baseMax);
+		//Dont normalize as we have to do that after we errode :/
+		// normalize(baseMin, baseMax);
 		lis.sendFinishedMap(id, map);
 
-		System.out.println("Thread Done : " + id);
+	//	System.out.println("Thread Done : " + id);
 	}
 
 	public void normalize(double baseMin, double baseMax) {
@@ -98,8 +99,6 @@ public class MapGenThread extends Thread {
 		 * }
 		 */
 
-		System.out.println("Thread : " + id + " normlizing with : " + baseMin
-				+ " " + baseMax);
 
 		for (int i = 0; i < map.length; i++) {
 			int val = map[i];
