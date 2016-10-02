@@ -46,8 +46,7 @@ public class HeightMap implements MapThreadDoneListener {
 		finishedMapParts = new ArrayList<int[]>();
 
 		// Add dummy objects so we can replace them later
-		// With maps that are done, sometimes triggers a nullpoint, but nothing
-		// really happens
+		
 		for (int i = 0; i < O.threads; i++) {
 			finishedMapParts.add(null);
 		}
