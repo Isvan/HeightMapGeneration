@@ -24,8 +24,10 @@ public class HeightMap implements MapThreadDoneListener {
 	int[] errosionMap;
 	
 	ArrayList<int[]> finishedMapParts;
-	ArrayList<MapGenThread> threads;
+	ArrayList<MapGenThread> mapGenThreads;
+	ArrayList<MapErrodeThread> mapErrodeThreads;
 
+	
 	ArrayList<DataPoint> mountains;
 	ArrayList<DataPoint> lakes;
 	Random rand;
@@ -84,8 +86,10 @@ public class HeightMap implements MapThreadDoneListener {
 	}
 
 	public void generateMap() {
-		threads = new ArrayList<MapGenThread>();
-
+		mapGenThreads = new ArrayList<MapGenThread>();
+		mapErrodeThreads = new ArrayList<MapErrodeThread>();
+		
+		
 		int heightPart = O.height / O.threads;
 		int heightLeftOver = O.height % O.threads;
 		int count = 0;
@@ -98,11 +102,11 @@ public class HeightMap implements MapThreadDoneListener {
 			if (i == O.threads - 1) {
 				// For when the dimensions don't divide nicely by the # of
 				// threads
-				threads.add(new MapGenThread(count, O.width, heightPart,
+				mapGenThreads.add(new MapGenThread(count, O.width, heightPart,
 						heightLeftOver, lakes, mountains, this));
 
 			} else {
-				threads.add(new MapGenThread(count, O.width, heightPart, 0,
+				mapGenThreads.add(new MapGenThread(count, O.width, heightPart, 0,
 						lakes, mountains, this));
 			}
 
@@ -110,7 +114,7 @@ public class HeightMap implements MapThreadDoneListener {
 			// mountains, this));
 			count++;
 
-			threads.get(i).start();
+			mapGenThreads.get(i).start();
 		}
 
 		System.out.println("Started Threads");
@@ -132,6 +136,8 @@ public class HeightMap implements MapThreadDoneListener {
 			generateFinalMap();
 			System.out.println("Time taken to generate map : "
 					+ (System.currentTimeMillis() - timeStart));
+			System.out.println("Time to start errode");
+			startErrode();
 			outputMap();
 		}
 
@@ -157,7 +163,7 @@ public class HeightMap implements MapThreadDoneListener {
 	}
 
 	private void normalizeMap() {
-		for (MapGenThread M : threads) {
+		for (MapGenThread M : mapGenThreads) {
 			// Threads may be asleep as they are waiting, wake them up
 			M.interrupt();
 			M.baseMin = minVal;
@@ -191,10 +197,21 @@ public class HeightMap implements MapThreadDoneListener {
 
 	}
 
+	private void startErrode(){
+		//Do just one thread for sake of debugging errosion algorithm 
+		mapErrodeThreads.add(new MapErrodeThread(O.width, O.height, finalMap, errosionMap, mountains,this));
+		for(MapErrodeThread M : mapErrodeThreads){
+			M.start();
+			
+		}
+	}
+	
 	@Override
 	public void errodeDone(int id, int[] map) {
 		// TODO Auto-generated method stub
-		
+		ImageGen gen = new ImageGen();
+		gen.generateImage(map, O.height, O.width,"EMap.png");
+		System.out.println("Errosion done");
 	}
 
 }

@@ -17,12 +17,13 @@ public class MapErrodeThread extends Thread {
 	ArrayList<DataPoint> mountainLoc;
 
 	public MapErrodeThread(int width, int height, int[] inputMap,
-			int[] errpsionMap,ArrayList<DataPoint> mountainLoc) {
+			int[] errpsionMap,ArrayList<DataPoint> mountainLoc,MapThreadDoneListener lis) {
 		this.mountainLoc = mountainLoc;
 		this.inputMap = inputMap;
 		this.errosionMapPart = errpsionMap;
 		this.height = height;
 		this.width = width;
+		this.lis = lis;
 	}
 
 	public void run() {
@@ -30,18 +31,19 @@ public class MapErrodeThread extends Thread {
 		for(DataPoint P : mountainLoc){
 			errode(P.X,P.Y,inputMap,errosionMapPart);
 		}
-		
+		lis.errodeDone(id, errosionMapPart);
 	}
 
 	// Recursive Function to generate errosion map
 	//InputMap should be the created heightMap
-	//ErrosionMap should be an array full of 1's
+	
 	public void errode(int x, int y, int[] inputMap, int[] errosionMap) {
 		if(marked(errosionMap[width * y + x])){
-			System.out.println("Attempted to errode a marked location ");
+			//System.out.println("Attempted to errode a marked location : " + x + " , " + y);
 			return;
 		}
 		
+		//Errode everypoint by at least one
 		errosionMap[width * y + x] += 1;
 		
 		int lowX = 0;
@@ -53,8 +55,9 @@ public class MapErrodeThread extends Thread {
 		// 0,-1		0,0		0,1
 		// 1,-1		1,0		1,1
 		
-		int currentHight = inputMap[width * y + x];
+		int tempHeight= inputMap[width * y + x];
 		
+		//Find lowest value of neighbors
 		for(int i = -1;i < 2;i++){
 			for(int k = -1;k < 2;k++){
 		
@@ -62,18 +65,54 @@ public class MapErrodeThread extends Thread {
 					continue;
 				}
 				
+				if(inArray(x + i,y+ k)){
+					if(tempHeight > inputMap[width * (y+k) + (x+i)]){
+						lowX = i;
+						lowY = k;
+						tempHeight = inputMap[width * (y+k) + (x+i)];
+					}
+				}
 				
+			}
+		}
+		
+		int currentHeight = inputMap[width *y + x];
+		errosionMap[width * y + x] = mark(errosionMap[width *y + x]);
+		//If the lowest point is the current point, then errosion is done
+		if(lowX == 0 && lowY == 0){
+			return;
+		}else{
+			//Find all points that are lower next to the origin point
+			//And not marked
+			for(int i = -1;i < 2;i++){
+				for(int k = -1;k < 2;k++){
+
+					
+					if(i == 0 && k == 0){
+						continue;
+					}
+					
+					if(inArray(x + i,y+ k)){
+						//System.out.println("X : " + x + " Y : " + y + " i:k " + i +":" + k);
+						if(currentHeight > inputMap[width * (y+k) + (x+i)]){
+						//	System.out.println("Going to position : " + (x+i) + " , " + (y+k) + " Height diff = " + (currentHeight - inputMap[width * (y+k) + (x+i)]));
+							errode(x+i,y+k,inputMap,errosionMap);
+						}
+					}
+					
+				
+				}
 			}
 		}
 		
 	}
 
 	public boolean inArray(int x,int y){
-		if(y > height){
+		if(y > height -1|| y < 0){
 			return false;
 		}
 		
-		if(x > width){
+		if(x > width -1  || x < 0){
 			return false;
 		}
 		
