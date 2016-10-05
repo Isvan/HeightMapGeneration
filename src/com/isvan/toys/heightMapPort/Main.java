@@ -9,14 +9,14 @@ public class Main {
 
 		Options o = new Options();
 
-		o.mountains = 2;
-		o.lakes = 1;
-		o.width = 1024;
-		o.height = 1024;
+		o.mountains = 5;
+		o.lakes = 0;
+		o.width = 500;
+		o.height = 500;
 		o.threads = 8;
 		o.fileName = "../outPut.png";
-		o.seed = 5806059978109952000l;
-		//o.seed = (long) (Math.random() * Long.MAX_VALUE);
+		o.seed = 7437833873965204480l;
+		o.seed = (long) (Math.random() * Long.MAX_VALUE);
 
 		if (false) {
 			switch (args.length) {

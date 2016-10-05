@@ -210,7 +210,7 @@ public class HeightMap implements MapThreadDoneListener {
 	public void errodeDone(int id, int[] map) {
 		// TODO Auto-generated method stub
 		ImageGen gen = new ImageGen();
-		gen.generateImage(map, O.height, O.width,"EMap.png");
+		gen.generateImage(map, O.height, O.width,"../EMap.png");
 		System.out.println("Errosion done");
 	}
 
