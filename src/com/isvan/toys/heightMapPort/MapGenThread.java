@@ -137,6 +137,8 @@ public class MapGenThread extends Thread {
 			int pointX = P.X;
 			int pointY = P.Y;
 
+			
+			
 			for (int i = 0; i < height+heightExtra; i++) {
 				for (int k = 0; k < width; k++) {
 

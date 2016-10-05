@@ -83,6 +83,9 @@ public class HeightMap implements MapThreadDoneListener {
 					(int) (rand.nextDouble() * O.height), rand.nextDouble()));
 		}
 
+		
+		
+		
 	}
 
 	public void generateMap() {

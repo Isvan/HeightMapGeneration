@@ -30,9 +30,10 @@ public class MapErrodeThread extends Thread {
 	public void run() {
 
 		for (DataPoint P : mountainLoc) {
-			System.out.println("Starting Errode at loc X:" + P.X + " Y:" + P.Y);
-			errode(P.X, P.Y, inputMap, errosionMapPart);
-			errosionMapPart[width * P.Y + P.X] = 0xFFFF;
+			// System.out.println("Starting Errode at loc X:" + P.X + " Y:" +
+			// P.Y);
+			errode(P.Y, P.X, inputMap, errosionMapPart);
+			// errosionMapPart[width * P.X + P.Y] = 0xFFFF;
 		}
 		lis.errodeDone(id, errosionMapPart);
 	}
@@ -42,16 +43,13 @@ public class MapErrodeThread extends Thread {
 
 	public void errode(int x, int y, int[] inputMap, int[] errosionMap) {
 		if (marked(errosionMap[width * y + x])) {
-		//	System.out.println("Attempted to errode a marked location : " + x
-		//			+ " , " + y);
+			// System.out.println("Attempted to errode a marked location : " + x
+			// + " , " + y);
 			return;
 		}
 
-		if(true){
-			return;
-		}
 		// Errode everypoint by at least one
-		//errosionMap[width * y + x] += 1;
+		errosionMap[width * y + x] += 0xffff;
 
 		int lowX = 0;
 		int lowY = 0;
@@ -74,7 +72,7 @@ public class MapErrodeThread extends Thread {
 				if (inArray(x + i, y + k)) {
 					// System.out.println("Check " + tempHeight + " vs " +
 					// inputMap[width * (y + k) + (x + i)]);
-					if (tempHeight < inputMap[width * (y + k) + (x + i)] - errosionMap[width*(y+k) + (x+i)]) {
+					if (tempHeight > inputMap[width * (y + k) + (x + i)]) {
 						lowX = i;
 						lowY = k;
 						tempHeight = inputMap[width * (y + k) + (x + i)];
@@ -94,6 +92,8 @@ public class MapErrodeThread extends Thread {
 			// And not marked
 			errosionMap[width * (y + lowY) + (x + lowX)] += errosionMap[width
 					* y + x];
+			
+			//errosionMap[width * (y + lowY) + (x + lowX)] = _	
 
 			errosionMap[width * y + x] = mark(errosionMap[width * y + x]);
 			for (int i = -1; i < 2; i++) {
@@ -109,13 +109,13 @@ public class MapErrodeThread extends Thread {
 						// System.out.println("Check " + currentHeight + " vs "
 						// + inputMap[width * (y + k) + (x + i)]);
 						if (currentHeight > inputMap[width * (y + k) + (x + i)]) {
-							// System.out.println("Going to position : "
-							// + (x + i)
-							// / + " , "
-							// + (y + k)
-							// + " Height diff = "
-							// + (currentHeight - inputMap[width * (y + k)
-							// + (x + i)]));
+						/*	System.out.println("Going to position : "
+									+ (x + i)
+									+ " , "
+									+ (y + k)
+									+ " Height diff = "
+									+ (currentHeight - inputMap[width * (y + k)
+											+ (x + i)])); */
 							errode(x + i, y + k, inputMap, errosionMap);
 						}
 					}

@@ -11,8 +11,8 @@ public class Main {
 
 		o.mountains = 5;
 		o.lakes = 0;
-		o.width = 500;
-		o.height = 500;
+		o.width = 2048;
+		o.height = 2048;
 		o.threads = 8;
 		o.fileName = "../outPut.png";
 		o.seed = 7437833873965204480l;
