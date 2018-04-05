@@ -1,6 +1,7 @@
 # HeightMapGeneration
-Generating a 16 bit grayscale highMap based on : http://mewo2.com/notes/terrain/
+HeightMapGeneration generates high resolution height maps. The height maps are 16-bit greyscale images. This is based on Martin O'Leary's [post](http://mewo2.com/notes/terrain/) about fantasy map generation.
 
-Using this library to create png images : https://github.com/leonbloy/pngj
+## Libraries used
+* [PNGJ](https://github.com/leonbloy/pngj) to create the .png images.
 
-Idea is to be able to create high resolution height maps
+
